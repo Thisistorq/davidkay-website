@@ -105,7 +105,7 @@ img { max-width: 100%; display: block; }
 
 /* Hero */
 .hero {
-  background: linear-gradient(115deg, rgba(20,24,31,0.82) 0%, rgba(20,24,31,0.55) 45%, rgba(20,24,31,0.25) 72%), linear-gradient(180deg, rgba(20,24,31,0.4), rgba(20,24,31,0.85) 70%, var(--ink) 100%), var(--ink) center 20% / cover no-repeat;
+  background: linear-gradient(115deg, rgba(20,24,31,0.82) 0%, rgba(20,24,31,0.55) 45%, rgba(20,24,31,0.25) 72%), linear-gradient(180deg, rgba(20,24,31,0.4), rgba(20,24,31,0.85) 70%, var(--ink) 100%), var(--ink) 100% 20% / cover no-repeat;
   color: var(--cream);
   padding: clamp(64px, 11vw, 120px) 0 clamp(48px, 8vw, 84px);
 }
