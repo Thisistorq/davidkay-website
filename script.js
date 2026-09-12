@@ -10,10 +10,11 @@ document.addEventListener('DOMContentLoaded', function () {
     a.addEventListener('click', function () { links.classList.remove('open'); });
   });
 
+  var carousel = document.querySelector('.gallery-carousel');
   var track = document.querySelector('.gallery-track');
   var prevNav = document.querySelector('.carousel-prev');
   var nextNav = document.querySelector('.carousel-next');
-  if (track && prevNav && nextNav) {
+  if (carousel && track && prevNav && nextNav) {
     var slides = Array.prototype.slice.call(track.querySelectorAll('.gallery-slide'));
     var currentIndex = function () {
       var trackRect = track.getBoundingClientRect();
@@ -26,14 +27,33 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       return closest;
     };
-    prevNav.addEventListener('click', function () {
-      var idx = Math.max(0, currentIndex() - 1);
+    var goTo = function (index) {
+      var idx = (index + slides.length) % slides.length;
       slides[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    };
+
+    var AUTOPLAY_MS = 4500;
+    var autoplayTimer = null;
+    var startAutoplay = function () {
+      stopAutoplay();
+      autoplayTimer = setInterval(function () { goTo(currentIndex() + 1); }, AUTOPLAY_MS);
+    };
+    var stopAutoplay = function () {
+      if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+    };
+
+    prevNav.addEventListener('click', function () { goTo(currentIndex() - 1); startAutoplay(); });
+    nextNav.addEventListener('click', function () { goTo(currentIndex() + 1); startAutoplay(); });
+
+    carousel.addEventListener('mouseenter', stopAutoplay);
+    carousel.addEventListener('mouseleave', startAutoplay);
+    carousel.addEventListener('focusin', stopAutoplay);
+    carousel.addEventListener('focusout', startAutoplay);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stopAutoplay(); else startAutoplay();
     });
-    nextNav.addEventListener('click', function () {
-      var idx = Math.min(slides.length - 1, currentIndex() + 1);
-      slides[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    });
+
+    startAutoplay();
   }
 
   var lightbox = document.getElementById('lightbox');
