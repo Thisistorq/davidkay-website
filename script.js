@@ -10,54 +10,25 @@ document.addEventListener('DOMContentLoaded', function () {
     a.addEventListener('click', function () { links.classList.remove('open'); });
   });
 
-  var carousel = document.querySelector('.gallery-carousel');
-  var track = document.querySelector('.gallery-track');
-  var prevNav = document.querySelector('.carousel-prev');
-  var nextNav = document.querySelector('.carousel-next');
-  if (carousel && track && prevNav && nextNav) {
-    var slides = Array.prototype.slice.call(track.querySelectorAll('.gallery-slide'));
-    var currentIndex = function () {
-      var trackRect = track.getBoundingClientRect();
-      var center = trackRect.left + trackRect.width / 2;
-      var closest = 0, closestDist = Infinity;
-      slides.forEach(function (s, i) {
-        var r = s.getBoundingClientRect();
-        var dist = Math.abs((r.left + r.width / 2) - center);
-        if (dist < closestDist) { closestDist = dist; closest = i; }
-      });
-      return closest;
-    };
-    var goTo = function (index) {
-      var idx = (index + slides.length) % slides.length;
-      slides[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    };
-
-    var AUTOPLAY_MS = 4500;
-    var autoplayTimer = null;
-    var startAutoplay = function () {
-      stopAutoplay();
-      autoplayTimer = setInterval(function () { goTo(currentIndex() + 1); }, AUTOPLAY_MS);
-    };
-    var stopAutoplay = function () {
-      if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
-    };
-
-    prevNav.addEventListener('click', function () { goTo(currentIndex() - 1); startAutoplay(); });
-    nextNav.addEventListener('click', function () { goTo(currentIndex() + 1); startAutoplay(); });
-
-    carousel.addEventListener('mouseenter', stopAutoplay);
-    carousel.addEventListener('mouseleave', startAutoplay);
-    carousel.addEventListener('focusin', stopAutoplay);
-    carousel.addEventListener('focusout', startAutoplay);
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) stopAutoplay(); else startAutoplay();
-    });
-
-    startAutoplay();
+  var revealTiles = Array.prototype.slice.call(document.querySelectorAll('.photo-tile'));
+  if (revealTiles.length) {
+    if ('IntersectionObserver' in window) {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      revealTiles.forEach(function (tile) { revealObserver.observe(tile); });
+    } else {
+      revealTiles.forEach(function (tile) { tile.classList.add('is-visible'); });
+    }
   }
 
   var lightbox = document.getElementById('lightbox');
-  var tiles = Array.prototype.slice.call(document.querySelectorAll('.gallery-slide'));
+  var tiles = Array.prototype.slice.call(document.querySelectorAll('.photo-tile'));
   if (!lightbox || !tiles.length) return;
 
   var lbImg = lightbox.querySelector('.lightbox-img');
