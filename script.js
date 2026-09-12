@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+  var copyrightYear = document.getElementById('copyright-year');
+  if (copyrightYear) copyrightYear.textContent = new Date().getFullYear();
+
   var toggle = document.querySelector('.nav-toggle');
   var links = document.querySelector('.nav-links');
   if (!toggle || !links) return;
