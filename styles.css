@@ -107,7 +107,7 @@ img { max-width: 100%; display: block; }
 
 /* Hero */
 .hero {
-  background-color: var(--ink); background-size: cover; background-position: center 30%; background-repeat: no-repeat;
+  background-color: var(--ink); background-size: cover; background-position: 75% 30%; background-repeat: no-repeat;
   color: var(--cream); position: relative;
   padding: clamp(64px, 11vw, 120px) 0 clamp(48px, 8vw, 84px);
 }
