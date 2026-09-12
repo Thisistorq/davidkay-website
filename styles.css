@@ -276,7 +276,6 @@ section + section { border-top: 1px solid var(--line); }
 
 /* Footer */
 .site-footer { background: var(--ink); color: rgba(245,242,236,0.7); padding: 40px 0 32px; }
-.footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 13.5px; }
+.footer-row { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 13.5px; }
 .footer-row a { text-decoration: none; color: rgba(245,242,236,0.7); }
 .footer-row a:hover { color: var(--cream); }
-.footer-links { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
