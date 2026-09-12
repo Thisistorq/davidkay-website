@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Admin — David Kay</title>
+<style>
+  /* Deliberately self-contained, not reading the site's own design tokens —
+     this is an internal tool, not a public page, so it doesn't need to
+     match the brand. */
+  body { margin: 0; font-family: system-ui, sans-serif; color: #14161a; background: #f6f7f8; }
+  .admin-wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+  .admin-header { background: #14161a; color: #fff; padding: 16px 20px; }
+  .admin-card { background: #fff; border: 1px solid #e3e5e8; border-radius: 6px; padding: 24px; margin-bottom: 22px; }
+  .admin-card h2 { font-size: 1.2rem; margin: 0 0 18px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: #5a606b; margin-bottom: 6px; }
+  .field input[type=text], .field select, .field textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #e3e5e8; border-radius: 4px;
+    font-size: 15px; box-sizing: border-box; font-family: inherit;
+  }
+  .field textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
+  .field .hint { font-size: 11px; color: #5a606b; margin-top: 5px; }
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; }
+  .photo-field { text-align: center; }
+  .photo-field .thumb { width: 100%; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #e3e5e8; margin-bottom: 8px; display: block; background: #eee; }
+  .photo-field label { display: block; font-size: 11px; color: #5a606b; margin-bottom: 6px; }
+  .photo-field.changed .thumb { outline: 2px solid #2a6df4; }
+  .btn { display: inline-block; padding: 10px 20px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; font-size: 14px; }
+  .btn-primary { background: #2a6df4; color: #fff; }
+  .btn-outline { background: transparent; border-color: #e3e5e8; color: #14161a; }
+  #save-bar { position: sticky; bottom: 0; background: #f6f7f8; border-top: 1px solid #e3e5e8; padding: 16px 0; margin-top: 20px; display: flex; align-items: center; gap: 16px; }
+  #save-msg { font-size: 13px; color: #5a606b; }
+  #login-gate { max-width: 380px; margin: 100px auto; padding: 0 20px; }
+  #login-gate .field { margin-bottom: 16px; }
+  #login-gate input { width: 100%; padding: 10px 12px; border: 1px solid #e3e5e8; border-radius: 4px; font-size: 15px; box-sizing: border-box; }
+  #login-msg { font-size: 13px; margin-top: 12px; }
+  #login-msg.error { color: #b3261e; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="admin-header">Admin — David Kay</div>
+
+<div id="login-gate">
+  <p style="font-size:1.3rem; margin-bottom:20px;">Sign in to edit the site</p>
+  <form id="login-form">
+    <div class="field"><label>Email</label><input type="email" id="login-email" required autocomplete="username"></div>
+    <div class="field"><label>Password</label><input type="password" id="login-password" required autocomplete="current-password"></div>
+    <button type="submit" class="btn btn-primary">Log in</button>
+    <div id="login-msg"></div>
+  </form>
+</div>
+
+<div id="admin-app" class="admin-wrap hidden">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <p style="font-size:1.3rem; margin:0;">Edit site content</p>
+    <button class="btn btn-outline" id="logout-btn">Log out</button>
+  </div>
+  <p id="load-msg" style="color:#5a606b;">Loading current content&hellip;</p>
+
+  <form id="edit-form" class="hidden">
+
+    <div class="admin-card">
+      <h2>Homepage hero</h2>
+      <div class="field">
+        <label>Role line (under the name)</label>
+        <input type="text" data-file="index.html" data-id="hero-role">
+      </div>
+      <div class="field">
+        <label>Quote</label>
+        <input type="text" data-file="index.html" data-id="hero-quote">
+        <div class="hint">The curly quotation marks around it are added automatically — just the words in between.</div>
+      </div>
+      <div class="field">
+        <label>Quote attributed to</label>
+        <input type="text" data-file="index.html" data-id="hero-quote-author">
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h2>Biography</h2>
+      <div class="field">
+        <label>Biography text</label>
+        <textarea data-file="about.html" data-id="bio-text" data-type="desc"></textarea>
+        <div class="hint">Leave a blank line between paragraphs. Any links (like North Shore Youth Music) appear as raw HTML here — leave that untouched unless you mean to change the link itself.</div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h2>Contact details</h2>
+      <div class="field">
+        <label>Email address</label>
+        <input type="text" data-file="contact.html" data-id="contact-email" data-type="email">
+      </div>
+      <div class="field">
+        <label>Phone number</label>
+        <input type="text" data-file="contact.html" data-id="contact-phone" data-type="phone">
+      </div>
+      <div class="field">
+        <label>Location</label>
+        <input type="text" data-file="contact.html" data-id="contact-location">
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h2>Photos</h2>
+      <p style="color:#5a606b; font-size:0.9rem; margin-top:-10px; margin-bottom:20px;">
+        Pick a new photo to replace any of these — it swaps out the current one at the same
+        filename, so nothing else on the page needs to change. Best results: similar shape/
+        orientation to what's there now. (The Gallery page's own photos aren't editable here yet —
+        ask Carl if you'd like those added.)
+      </p>
+      <div class="photo-grid" id="photo-grid">
+        <div class="photo-field">
+          <label>Homepage banner</label>
+          <img class="thumb" src="images/gallery/apo-connecting-2020-full.webp">
+          <input type="file" accept="image/*" data-path="images/gallery/apo-connecting-2020-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Biography photo</label>
+          <img class="thumb" src="images/bio-headshot.webp">
+          <input type="file" accept="image/*" data-path="images/bio-headshot.webp">
+        </div>
+        <div class="photo-field">
+          <label>Contact page banner</label>
+          <img class="thumb" src="images/hero-contact.webp">
+          <input type="file" accept="image/*" data-path="images/hero-contact.webp">
+        </div>
+        <div class="photo-field">
+          <label>Repertoire page banner</label>
+          <img class="thumb" src="images/hero-repertoire.webp">
+          <input type="file" accept="image/*" data-path="images/hero-repertoire.webp">
+        </div>
+        <div class="photo-field">
+          <label>Gallery page banner</label>
+          <img class="thumb" src="images/hero-media.webp">
+          <input type="file" accept="image/*" data-path="images/hero-media.webp">
+        </div>
+      </div>
+    </div>
+
+    <div id="save-bar">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <span id="save-msg"></span>
+    </div>
+  </form>
+</div>
+
+<script>
+// Content reads/writes go through our own Netlify Function
+// (netlify/functions/github-content.js), which holds the real GitHub
+// token as a server-side environment variable — the browser never sees
+// it. Earlier approaches (Netlify's Git Gateway, then embedding the token
+// directly in this page) both failed: Git Gateway hit a platform-level
+// restriction, and GitHub's own secret-scanning auto-revoked the embedded
+// token within moments of it being committed.
+const API_ROOT = "/.netlify/functions/github-content?path=";
+// List every page this panel edits fields in.
+const FILES = ["index.html", "about.html", "contact.html"];
+let fileCache = {}; // filename -> { content, sha }
+
+// ---- Direct Identity API auth (no widget) ----
+// Requires Netlify Identity enabled on this site (Site configuration >
+// Identity > Enable), with registration set to Invite only, and the site
+// owner inviting each real user by email from that same panel.
+const SESSION_KEY = 'admin_session';
+
+function getSession() {
+  const raw = localStorage.getItem(SESSION_KEY);
+  return raw ? JSON.parse(raw) : null;
+}
+function saveTokenResponse(data) {
+  const expires_at = Date.now() + (data.expires_in * 1000) - 60000; // refresh 1 min early
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+    expires_at
+  }));
+}
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
+async function ensureValidToken() {
+  const session = getSession();
+  if (!session) return null;
+  if (Date.now() < session.expires_at) return session.access_token;
+  const res = await fetch('/.netlify/identity/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: session.refresh_token })
+  });
+  if (!res.ok) { clearSession(); return null; }
+  const data = await res.json();
+  saveTokenResponse(data);
+  return data.access_token;
+}
+
+function showApp() {
+  document.getElementById('login-gate').classList.add('hidden');
+  document.getElementById('admin-app').classList.remove('hidden');
+  init();
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('login-msg');
+  msg.className = '';
+  msg.textContent = 'Logging in…';
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  try {
+    const res = await fetch('/.netlify/identity/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ grant_type: 'password', username: email, password: password })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error_description || err.msg || ('Login failed (' + res.status + ')'));
+    }
+    const data = await res.json();
+    saveTokenResponse(data);
+    msg.textContent = '';
+    showApp();
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.className = 'error';
+  }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  clearSession();
+  location.reload();
+});
+
+// If already logged in from a previous visit, skip straight to the app
+if (getSession()) showApp();
+
+async function loadFile(name) {
+  const res = await fetch(API_ROOT + name);
+  if (!res.ok) throw new Error("Failed to load " + name + " (" + res.status + ")");
+  const data = await res.json();
+  const content = atob(data.content.replace(/\n/g, ""));
+  fileCache[name] = { content, sha: data.sha };
+}
+
+function getFieldValue(content, id) {
+  // For simple <span id="...">TEXT</span> fields
+  const simple = new RegExp('id="' + id + '">([\\s\\S]*?)</span>', 'i');
+  const m = content.match(simple);
+  return m ? m[1] : null;
+}
+
+function getDescValue(content, id) {
+  // <div class="desc-edit" id="ID"> <p>...</p> <p>...</p> </div>
+  const re = new RegExp('<div class="[^"]*desc-edit[^"]*" id="' + id + '">([\\s\\S]*?)</div>', 'i');
+  const m = content.match(re);
+  if (!m) return null;
+  const paras = m[1].trim().split(/<\/p>\s*<p>/i).map(p =>
+    p.replace(/^\s*<p>/i, '').replace(/<\/p>\s*$/i, '').trim()
+  );
+  return paras.join('\n\n');
+}
+
+function setDescValue(content, id, text) {
+  const paras = text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  const inner = '\n        ' + paras.map(p => '<p>' + p + '</p>').join('\n        ') + '\n      ';
+  const re = new RegExp('(<div class="[^"]*desc-edit[^"]*" id="' + id + '">)([\\s\\S]*?)(</div>)', 'i');
+  return content.replace(re, (m, a, b, c) => a + inner + c);
+}
+
+function getLinkValue(content, id) {
+  // <a href="HREF" id="ID">TEXT</a>
+  const re = new RegExp('<a href="([^"]*)"[^>]*\\sid="' + id + '"[^>]*>([^<]*)</a>', 'i');
+  const m = content.match(re);
+  return m ? { href: m[1], text: m[2] } : null;
+}
+
+function setLinkValue(content, id, href, text) {
+  const re = new RegExp('(<a href=")[^"]*("[^>]*\\sid="' + id + '"[^>]*>)[^<]*(</a>)', 'i');
+  return content.replace(re, (m, a, b, c) => a + href + b + text + c);
+}
+
+function populateForm() {
+  document.querySelectorAll('[data-id]').forEach(el => {
+    const file = el.dataset.file;
+    const id = el.dataset.id;
+    const type = el.dataset.type;
+    const content = fileCache[file].content;
+    if (type === "desc") {
+      const v = getDescValue(content, id);
+      if (v !== null) el.value = v;
+    } else if (type === "email" || type === "phone") {
+      const v = getLinkValue(content, id);
+      if (v) el.value = v.text;
+    } else {
+      const v = getFieldValue(content, id);
+      if (v !== null) el.value = v;
+    }
+  });
+}
+
+function applyEdits() {
+  const edited = {};
+  FILES.forEach(f => edited[f] = fileCache[f].content);
+
+  // simple text fields
+  document.querySelectorAll('input[type=text]:not([data-type])').forEach(el => {
+    const file = el.dataset.file, id = el.dataset.id;
+    const re = new RegExp('(id="' + id + '">)([\\s\\S]*?)(</span>)', 'i');
+    edited[file] = edited[file].replace(re, (m, a, b, c) => a + el.value + c);
+  });
+
+  // description textareas
+  document.querySelectorAll('textarea[data-type="desc"]').forEach(el => {
+    const file = el.dataset.file, id = el.dataset.id;
+    edited[file] = setDescValue(edited[file], id, el.value);
+  });
+
+  // email field: one input controls both mailto: href and displayed text
+  document.querySelectorAll('input[data-type="email"]').forEach(el => {
+    const file = el.dataset.file, id = el.dataset.id;
+    const value = el.value.trim();
+    edited[file] = setLinkValue(edited[file], id, "mailto:" + value, value);
+  });
+
+  // phone field: one input controls both tel: href (digits only, keeping a leading +) and displayed text
+  document.querySelectorAll('input[data-type="phone"]').forEach(el => {
+    const file = el.dataset.file, id = el.dataset.id;
+    const value = el.value.trim();
+    edited[file] = setLinkValue(edited[file], id, "tel:" + value.replace(/[^\d+]/g, ''), value);
+  });
+
+  return edited;
+}
+
+async function saveFile(name, content, sha) {
+  const res = await fetch(API_ROOT + name, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: "Update " + name + " via admin panel",
+      content: btoa(unescape(encodeURIComponent(content))),
+      sha: sha
+    })
+  });
+  if (!res.ok) throw new Error("Failed to save " + name + " (" + res.status + ")");
+}
+
+document.getElementById('edit-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('save-msg');
+  msg.textContent = "Saving…";
+  try {
+    const edited = applyEdits();
+    for (const file of FILES) {
+      if (edited[file] !== fileCache[file].content) {
+        await saveFile(file, edited[file], fileCache[file].sha);
+      }
+    }
+    const photoPaths = Object.keys(pendingPhotos);
+    for (const path of photoPaths) {
+      await savePhoto(path, pendingPhotos[path].dataUrl);
+      delete pendingPhotos[path];
+    }
+    document.querySelectorAll('.photo-field.changed').forEach(f => f.classList.remove('changed'));
+    msg.textContent = "Saved! Live in about 10–30 seconds.";
+    await init(); // refresh cache/sha for further edits
+  } catch (err) {
+    msg.textContent = "Error: " + err.message;
+  }
+});
+
+async function init() {
+  const loadMsg = document.getElementById('load-msg');
+  loadMsg.textContent = "Loading current content…";
+  loadMsg.classList.remove('hidden');
+  try {
+    for (const f of FILES) await loadFile(f);
+    populateForm();
+    loadMsg.classList.add('hidden');
+    document.getElementById('edit-form').classList.remove('hidden');
+  } catch (err) {
+    loadMsg.textContent = "Couldn't load content: " + err.message + " — try logging out and back in.";
+  }
+}
+
+// ---- Photo uploads ----
+const pendingPhotos = {}; // path -> { file, dataUrl }
+
+document.querySelectorAll('#photo-grid input[type=file]').forEach(input => {
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+    const path = input.dataset.path;
+    const reader = new FileReader();
+    reader.onload = () => {
+      pendingPhotos[path] = { file, dataUrl: reader.result };
+      const field = input.closest('.photo-field');
+      field.querySelector('.thumb').src = reader.result;
+      field.classList.add('changed');
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+async function savePhoto(path, dataUrl) {
+  const base64 = dataUrl.split(',')[1];
+  // Need the current sha to update an existing file
+  const getRes = await fetch(API_ROOT + path);
+  const sha = getRes.ok ? (await getRes.json()).sha : undefined;
+  const body = { message: "Update " + path + " via admin panel", content: base64 };
+  if (sha) body.sha = sha;
+  const res = await fetch(API_ROOT + path, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error("Failed to save " + path + " (" + res.status + ")");
+}
+</script>
+</body>
+</html>
