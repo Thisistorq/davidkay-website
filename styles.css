@@ -87,7 +87,7 @@ img { max-width: 100%; display: block; }
 /* Homepage header: name moves into the nav, blends into the hero photo below */
 .site-header--home {
   position: absolute; top: 0; left: 0; right: 0; z-index: 10;
-  background: linear-gradient(180deg, rgba(37,53,81,0.92) 0%, rgba(37,53,81,0.55) 65%, rgba(37,53,81,0) 100%);
+  background: linear-gradient(180deg, rgba(37,53,81,0.95) 0%, rgba(37,53,81,0.75) 75%, rgba(37,53,81,0) 100%);
   backdrop-filter: none; border-bottom: none;
 }
 .site-header--home .nav { padding-top: 28px; padding-bottom: 48px; }
@@ -111,8 +111,8 @@ img { max-width: 100%; display: block; }
 
 /* Hero: full-bleed photo only, no text overlay */
 .hero {
-  background-color: var(--ink); background-size: cover; background-position: 75% 30%; background-repeat: no-repeat;
-  min-height: 88vh;
+  background-color: var(--ink); background-size: cover; background-position: 75% 18%; background-repeat: no-repeat;
+  min-height: 96vh;
 }
 @media (max-width: 780px) {
   .hero { min-height: 62vh; }
