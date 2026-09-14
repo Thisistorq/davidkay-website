@@ -53,6 +53,17 @@
   </form>
 </div>
 
+<div id="invite-gate" class="hidden">
+  <p style="font-size:1.3rem; margin-bottom:8px;">Set your password</p>
+  <p style="color:#5a606b; font-size:0.9rem; margin-top:0; margin-bottom:20px;">This is the first time you've opened this link — choose a password, and you'll use it to log in here from now on.</p>
+  <form id="invite-form">
+    <div class="field"><label>New password</label><input type="password" id="invite-password" required autocomplete="new-password" minlength="8"></div>
+    <div class="field"><label>Confirm password</label><input type="password" id="invite-password-confirm" required autocomplete="new-password" minlength="8"></div>
+    <button type="submit" class="btn btn-primary">Set password &amp; log in</button>
+    <div id="invite-msg"></div>
+  </form>
+</div>
+
 <div id="admin-app" class="admin-wrap hidden">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
     <p style="font-size:1.3rem; margin:0;">Edit site content</p>
@@ -350,6 +361,58 @@ document.getElementById('logout-btn').addEventListener('click', () => {
   clearSession();
   location.reload();
 });
+
+// ---- Invite / password-recovery links ----
+// Netlify's invite and "forgot password" emails link here with
+// #invite_token=... or #recovery_token=... in the URL — both mean "this
+// person doesn't have a password yet, let them set one" rather than "log
+// in with an existing one". Without this, clicking the invite link just
+// lands on the ordinary login form with no way to set a first password.
+(function () {
+  const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+  const inviteToken = params.get('invite_token');
+  const recoveryToken = params.get('recovery_token');
+  const token = inviteToken || recoveryToken;
+  if (!token) return;
+  const type = inviteToken ? 'invite' : 'recovery';
+
+  history.replaceState(null, '', location.pathname); // token is single-use; don't leave it sitting in the URL
+  document.getElementById('login-gate').classList.add('hidden');
+  document.getElementById('invite-gate').classList.remove('hidden');
+
+  document.getElementById('invite-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('invite-msg');
+    const password = document.getElementById('invite-password').value;
+    const confirm = document.getElementById('invite-password-confirm').value;
+    if (password !== confirm) {
+      msg.textContent = "Passwords don't match.";
+      msg.className = 'error';
+      return;
+    }
+    msg.className = '';
+    msg.textContent = 'Setting password…';
+    try {
+      const res = await fetch('/.netlify/identity/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, token, password })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error_description || err.msg || ('Failed (' + res.status + ')'));
+      }
+      const data = await res.json();
+      saveTokenResponse(data);
+      msg.textContent = '';
+      document.getElementById('invite-gate').classList.add('hidden');
+      showApp();
+    } catch (err) {
+      msg.textContent = err.message + ' — this link may have already been used or expired; ask Carl to send a fresh invite.';
+      msg.className = 'error';
+    }
+  });
+})();
 
 // If already logged in from a previous visit, skip straight to the app
 if (getSession()) showApp();
