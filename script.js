@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     a.addEventListener('click', function () { links.classList.remove('open'); });
   });
 
-  var revealTiles = Array.prototype.slice.call(document.querySelectorAll('.photo-tile'));
+  var revealTiles = Array.prototype.slice.call(document.querySelectorAll('.photo-tile, .slide-in-left'));
   if (revealTiles.length) {
     if ('IntersectionObserver' in window) {
       var revealObserver = new IntersectionObserver(function (entries) {
