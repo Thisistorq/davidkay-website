@@ -102,6 +102,57 @@
         <label>Location</label>
         <input type="text" data-file="contact.html" data-id="contact-location">
       </div>
+      <div class="field">
+        <label>Testimonial quote</label>
+        <input type="text" data-file="contact.html" data-id="contact-quote">
+      </div>
+      <div class="field">
+        <label>Testimonial quote attributed to</label>
+        <input type="text" data-file="contact.html" data-id="contact-quote-author">
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h2>Repertoire</h2>
+      <p style="color:#5a606b; font-size:0.9rem; margin-top:-10px; margin-bottom:20px;">
+        One line per year: <code>YEAR: performance, performance, performance</code> — separate
+        multiple performances in the same year with a <strong>|</strong> pipe character (not a
+        comma, since some performance names already contain commas). Add a new line for a new
+        year, or delete a line to remove one — they're automatically re-sorted newest-first when
+        you save. To add a whole new category (a 5th card), ask Carl.
+      </p>
+      <div class="field">
+        <label>Category 1 — title</label>
+        <input type="text" data-file="repertoire.html" data-id="rep-nz-artists-title">
+      </div>
+      <div class="field">
+        <label>Category 1 — performances</label>
+        <textarea data-file="repertoire.html" data-id="nz-artists" data-type="rep-list"></textarea>
+      </div>
+      <div class="field">
+        <label>Category 2 — title</label>
+        <input type="text" data-file="repertoire.html" data-id="rep-movies-title">
+      </div>
+      <div class="field">
+        <label>Category 2 — performances</label>
+        <textarea data-file="repertoire.html" data-id="movies" data-type="rep-list"></textarea>
+      </div>
+      <div class="field">
+        <label>Category 3 — title</label>
+        <input type="text" data-file="repertoire.html" data-id="rep-large-scale-title">
+      </div>
+      <div class="field">
+        <label>Category 3 — performances</label>
+        <textarea data-file="repertoire.html" data-id="large-scale" data-type="rep-list"></textarea>
+      </div>
+      <div class="field">
+        <label>Category 4 — title</label>
+        <input type="text" data-file="repertoire.html" data-id="rep-community-title">
+      </div>
+      <div class="field">
+        <label>Category 4 — performances</label>
+        <textarea data-file="repertoire.html" data-id="community" data-type="rep-list"></textarea>
+      </div>
     </div>
 
     <div class="admin-card">
@@ -123,6 +174,16 @@
           <img class="thumb" src="images/bio-headshot.webp">
           <input type="file" accept="image/*" data-path="images/bio-headshot.webp">
         </div>
+        <div class="photo-field">
+          <label>Homepage testimonial photo</label>
+          <img class="thumb" src="images/gallery/discovery-2025-full.webp">
+          <input type="file" accept="image/*" data-path="images/gallery/discovery-2025-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Contact testimonial photo</label>
+          <img class="thumb" src="images/gallery/bic-runga-full.webp">
+          <input type="file" accept="image/*" data-path="images/gallery/bic-runga-full.webp">
+        </div>
       </div>
     </div>
 
@@ -143,7 +204,7 @@
 // token within moments of it being committed.
 const API_ROOT = "/.netlify/functions/github-content?path=";
 // List every page this panel edits fields in.
-const FILES = ["index.html", "about.html", "contact.html"];
+const FILES = ["index.html", "about.html", "contact.html", "repertoire.html"];
 let fileCache = {}; // filename -> { content, sha }
 
 // ---- Direct Identity API auth (no widget) ----
@@ -255,6 +316,39 @@ function setDescValue(content, id, text) {
   return content.replace(re, (m, a, b, c) => a + inner + c);
 }
 
+function getRepListValue(content, id) {
+  // <!-- rep:ID:start --> ...repeated <div class="rep-year">...</div>... <!-- rep:ID:end -->
+  // Converted to one "YEAR: item | item | item" line per year for the textarea.
+  const re = new RegExp('<!-- rep:' + id + ':start -->([\\s\\S]*?)<!-- rep:' + id + ':end -->', 'i');
+  const m = content.match(re);
+  if (!m) return null;
+  const yearRe = /<div class="rep-year"><span class="y">([^<]*)<\/span><div class="items">([\s\S]*?)<\/div><\/div>/gi;
+  const lines = [];
+  let ym;
+  while ((ym = yearRe.exec(m[1])) !== null) {
+    const year = ym[1].trim();
+    const items = ym[2].split(/<br\s*\/?>/i).map(s => s.trim()).filter(Boolean);
+    lines.push(year + ': ' + items.join(' | '));
+  }
+  return lines.join('\n');
+}
+
+function setRepListValue(content, id, text) {
+  const parsed = text.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+    const idx = line.indexOf(':');
+    const year = (idx === -1 ? line : line.slice(0, idx)).trim();
+    const items = (idx === -1 ? '' : line.slice(idx + 1)).split('|').map(s => s.trim()).filter(Boolean);
+    return { year, items };
+  }).filter(p => p.year && p.items.length);
+  // Newest year first, regardless of the order typed/pasted in.
+  parsed.sort((a, b) => parseInt(b.year, 10) - parseInt(a.year, 10));
+  const inner = parsed.map(p =>
+    '        <div class="rep-year"><span class="y">' + p.year + '</span><div class="items">' + p.items.join('<br>') + '</div></div>'
+  ).join('\n');
+  const re = new RegExp('(<!-- rep:' + id + ':start -->)([\\s\\S]*?)(<!-- rep:' + id + ':end -->)', 'i');
+  return content.replace(re, (m, a, b, c) => a + '\n' + inner + '\n        ' + c);
+}
+
 function getLinkValue(content, id) {
   // <a href="HREF" id="ID">TEXT</a>
   const re = new RegExp('<a href="([^"]*)"[^>]*\\sid="' + id + '"[^>]*>([^<]*)</a>', 'i');
@@ -275,6 +369,9 @@ function populateForm() {
     const content = fileCache[file].content;
     if (type === "desc") {
       const v = getDescValue(content, id);
+      if (v !== null) el.value = v;
+    } else if (type === "rep-list") {
+      const v = getRepListValue(content, id);
       if (v !== null) el.value = v;
     } else if (type === "email" || type === "phone") {
       const v = getLinkValue(content, id);
@@ -301,6 +398,12 @@ function applyEdits() {
   document.querySelectorAll('textarea[data-type="desc"]').forEach(el => {
     const file = el.dataset.file, id = el.dataset.id;
     edited[file] = setDescValue(edited[file], id, el.value);
+  });
+
+  // repertoire year lists
+  document.querySelectorAll('textarea[data-type="rep-list"]').forEach(el => {
+    const file = el.dataset.file, id = el.dataset.id;
+    edited[file] = setRepListValue(edited[file], id, el.value);
   });
 
   // email field: one input controls both mailto: href and displayed text
