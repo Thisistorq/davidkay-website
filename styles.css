@@ -105,13 +105,26 @@ img { max-width: 100%; display: block; }
 }
 .page-subtitle { color: var(--ink-soft); margin: -24px 0 40px; font-size: 1.05rem; max-width: 56ch; }
 
-/* Hero: full-bleed photo only, no text overlay */
+/* Hero: full-bleed photo, with a quote band across the bottom */
 .hero {
   background-color: var(--ink); background-size: cover; background-position: 75% 18%; background-repeat: no-repeat;
-  min-height: 96vh;
+  min-height: 96vh; position: relative;
 }
 @media (max-width: 780px) {
   .hero { min-height: 62vh; }
+}
+.hero-quote-band {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  background: linear-gradient(0deg, rgba(37,53,81,0.92) 0%, rgba(37,53,81,0.65) 65%, rgba(37,53,81,0) 100%);
+  padding: 72px clamp(20px, 5vw, 56px) 32px; margin: 0; text-align: center;
+}
+.hero-quote-band {
+  font-family: var(--display); font-style: italic; font-weight: 500; color: var(--cream);
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem); line-height: 1.5;
+}
+.hero-quote-band cite {
+  display: block; font-family: var(--mono); font-style: normal; font-size: 12px;
+  letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245,242,236,0.7); margin-top: 14px;
 }
 
 /* Testimonial (below the fold) */
@@ -126,6 +139,7 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-top: 14px;
 }
 .testimonial-image img { width: 100%; border-radius: 4px; display: block; }
+.testimonial-solo-image { width: 100%; max-width: 720px; margin: 0 auto; border-radius: 4px; display: block; }
 @media (max-width: 860px) {
   .testimonial-grid { grid-template-columns: 1fr; gap: 32px; }
   .testimonial-image { order: -1; }
@@ -206,6 +220,8 @@ section + section { border-top: 1px solid var(--line); }
   font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.05em; display: block; margin-bottom: 4px;
 }
 .rep-year .items { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.7; }
+.rep-year .items a { text-decoration: underline; text-decoration-color: var(--line); }
+.rep-year .items a:hover { color: var(--ink); }
 
 @media (min-width: 1024px) {
   .rep-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
