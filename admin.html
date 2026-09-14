@@ -421,7 +421,14 @@ async function loadFile(name) {
   const res = await fetch(API_ROOT + name);
   if (!res.ok) throw new Error("Failed to load " + name + " (" + res.status + ")");
   const data = await res.json();
-  const content = atob(data.content.replace(/\n/g, ""));
+  // atob() alone treats each decoded byte as its own character, which mangles
+  // any multi-byte UTF-8 character (em dashes, curly quotes, names with
+  // accents) — not just on save, but silently, in every field in the file,
+  // even ones nobody touched. TextDecoder does the byte->text conversion
+  // properly.
+  const binary = atob(data.content.replace(/\n/g, ""));
+  const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+  const content = new TextDecoder("utf-8").decode(bytes);
   fileCache[name] = { content, sha: data.sha };
 }
 
