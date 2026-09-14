@@ -139,10 +139,16 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-top: 14px;
 }
 .testimonial-image img { width: 100%; border-radius: 4px; display: block; }
-.testimonial-solo-image { width: 100%; max-width: 720px; margin: 0 auto; border-radius: 4px; display: block; }
 @media (max-width: 860px) {
   .testimonial-grid { grid-template-columns: 1fr; gap: 32px; }
   .testimonial-image { order: -1; }
+}
+
+/* Contact: details beside the photo */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.contact-photo img { width: 100%; border-radius: 4px; display: block; }
+@media (max-width: 860px) {
+  .contact-grid { grid-template-columns: 1fr; gap: 32px; }
 }
 
 /* Sections */
