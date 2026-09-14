@@ -1,3 +1,11 @@
+// Netlify's invite/"forgot password" emails link to the site's own root
+// (not to admin.html), landing here with #invite_token=/#recovery_token=
+// in the URL. Send it straight on to the admin panel, which knows how to
+// turn that into a "set your password" step.
+if (/[#&](invite_token|recovery_token)=/.test(location.hash)) {
+  location.replace('/admin.html' + location.hash);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   var copyrightYear = document.getElementById('copyright-year');
   if (copyrightYear) copyrightYear.textContent = new Date().getFullYear();
