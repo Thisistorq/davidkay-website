@@ -144,11 +144,16 @@ img { max-width: 100%; display: block; }
   .testimonial-image { order: -1; }
 }
 
-/* Contact: details beside the photo */
+/* Contact: details beside the photo, whole section kept above the fold */
+.section-tight { padding: clamp(32px, 5vw, 56px) 0; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
-.contact-photo img { width: 100%; border-radius: 4px; display: block; }
+.contact-photo img {
+  width: 100%; height: clamp(240px, 44vh, 440px); object-fit: cover; object-position: center 22%;
+  border-radius: 4px; display: block;
+}
 @media (max-width: 860px) {
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+  .contact-photo img { height: clamp(220px, 38vh, 380px); }
 }
 
 /* Sections */
