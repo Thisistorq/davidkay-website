@@ -7,6 +7,7 @@
   --line-on-ink: rgba(245, 242, 236, 0.2);
 
   --display: 'Playfair Display', Georgia, serif;
+  --brand: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   --body: 'Public Sans', -apple-system, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
 
@@ -47,8 +48,8 @@ img { max-width: 100%; display: block; }
 }
 .brand-block { text-decoration: none; display: block; }
 .brand-name {
-  font-family: var(--display); font-weight: 600; color: var(--cream);
-  font-size: clamp(1.9rem, 3.4vw, 2.8rem); letter-spacing: -0.01em; line-height: 1;
+  font-family: var(--brand); font-weight: 700; font-style: italic; color: var(--cream);
+  font-size: clamp(2.4rem, 5vw, 4rem); letter-spacing: -0.01em; line-height: 1;
   display: block; margin: 0;
 }
 .brand-tagline {
@@ -71,6 +72,17 @@ img { max-width: 100%; display: block; }
 }
 .btn-accent { background: var(--accent); color: var(--cream); }
 .btn-accent:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(122,46,61,0.35); }
+
+/* Header Contact link: a framed mono label rather than a generic filled pill,
+   matching the tagline/eyebrow treatment used elsewhere on the site. */
+.nav-links .btn-accent {
+  background: transparent; border: 1px solid rgba(245,242,236,0.45); color: var(--cream);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 10px 22px; border-radius: 3px;
+}
+.nav-links .btn-accent:hover, .nav-links .btn-accent[aria-current="page"] {
+  background: var(--accent); border-color: var(--accent); box-shadow: none;
+}
 
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
 .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--cream); margin: 5px 0; }
@@ -242,6 +254,12 @@ section + section { border-top: 1px solid var(--line); }
   .rep-year .y { font-size: 11px; }
   .rep-year .items { font-size: 0.85rem; line-height: 1.55; }
 }
+
+.btn-outline { background: transparent; border: 1px solid var(--ink); color: var(--ink); }
+.btn-outline:hover { background: var(--ink); color: var(--cream); }
+
+/* Homepage: closing CTA pair, below the fold */
+.home-cta .wrap { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
 
 /* Contact */
 .btn-lg { padding: 15px 36px; font-size: 15px; margin-bottom: 8px; }
