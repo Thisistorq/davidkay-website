@@ -374,7 +374,7 @@ document.getElementById('logout-btn').addEventListener('click', () => {
   const recoveryToken = params.get('recovery_token');
   const token = inviteToken || recoveryToken;
   if (!token) return;
-  const type = inviteToken ? 'invite' : 'recovery';
+  const type = inviteToken ? 'signup' : 'recovery'; // GoTrue verifies an invite as a "signup" confirmation, not "invite"
 
   history.replaceState(null, '', location.pathname); // token is single-use; don't leave it sitting in the URL
   document.getElementById('login-gate').classList.add('hidden');
@@ -408,7 +408,7 @@ document.getElementById('logout-btn').addEventListener('click', () => {
       document.getElementById('invite-gate').classList.add('hidden');
       showApp();
     } catch (err) {
-      msg.textContent = err.message + ' — this link may have already been used or expired; ask Carl to send a fresh invite.';
+      msg.textContent = err.message + ' — if this keeps happening, ask Carl for a fresh invite link.';
       msg.className = 'error';
     }
   });
