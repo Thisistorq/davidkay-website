@@ -148,12 +148,12 @@ img { max-width: 100%; display: block; }
 .section-tight { padding: clamp(32px, 5vw, 56px) 0; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
 .contact-photo img {
-  width: 100%; height: clamp(280px, 56vh, 560px); object-fit: cover; object-position: center 20%;
+  width: 100%; height: clamp(320px, 64vh, 640px); object-fit: cover; object-position: center 55%;
   border-radius: 4px; display: block;
 }
 @media (max-width: 860px) {
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
-  .contact-photo img { height: clamp(260px, 48vh, 480px); }
+  .contact-photo img { height: clamp(300px, 54vh, 540px); }
 }
 
 /* Sections */

@@ -160,29 +160,100 @@
       <p style="color:#5a606b; font-size:0.9rem; margin-top:-10px; margin-bottom:20px;">
         Pick a new photo to replace any of these — it swaps out the current one at the same
         filename, so nothing else on the page needs to change. Best results: similar shape/
-        orientation to what's there now. (The Gallery page's own photos aren't editable here yet —
-        ask Carl if you'd like those added.)
+        orientation to what's there now. Three of these (marked below) are also photos in the
+        Gallery grid further down — updating one updates both places.
       </p>
-      <div class="photo-grid" id="photo-grid">
+      <div class="photo-grid photo-grid-inputs">
         <div class="photo-field">
-          <label>Homepage banner</label>
+          <label>Homepage banner<br><small>(also Gallery: APO Connecting)</small></label>
           <img class="thumb" src="images/gallery/apo-connecting-2020-full.webp">
-          <input type="file" accept="image/*" data-path="images/gallery/apo-connecting-2020-full.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/apo-connecting-2020-full.webp">
         </div>
         <div class="photo-field">
           <label>Biography photo</label>
           <img class="thumb" src="images/bio-headshot.webp">
-          <input type="file" accept="image/*" data-path="images/bio-headshot.webp">
+          <input type="file" accept="image/*" data-paths="images/bio-headshot.webp">
         </div>
         <div class="photo-field">
-          <label>Homepage testimonial photo</label>
+          <label>Homepage testimonial photo<br><small>(also Gallery: with Bic Runga)</small></label>
           <img class="thumb" src="images/gallery/bic-runga-full.webp">
-          <input type="file" accept="image/*" data-path="images/gallery/bic-runga-full.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/bic-runga-full.webp,images/gallery/bic-runga-thumb.webp">
         </div>
         <div class="photo-field">
-          <label>Contact testimonial photo</label>
+          <label>Contact photo<br><small>(also Gallery: Discovery 2025)</small></label>
           <img class="thumb" src="images/gallery/discovery-2025-full.webp">
-          <input type="file" accept="image/*" data-path="images/gallery/discovery-2025-full.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/discovery-2025-full.webp,images/gallery/discovery-2025-thumb.webp">
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h2>Gallery photos</h2>
+      <p style="color:#5a606b; font-size:0.9rem; margin-top:-10px; margin-bottom:20px;">
+        Pick a new photo to replace any tile on the Gallery page. Each upload updates both the
+        grid thumbnail and the larger version shown when a visitor clicks it, so there's just
+        the one photo to choose per tile. Reordering tiles or adding/removing one needs Carl.
+      </p>
+      <div class="photo-grid photo-grid-inputs">
+        <div class="photo-field">
+          <label>APO — Connecting 2020<br><small>(also Homepage banner)</small></label>
+          <img class="thumb" src="images/gallery/apo-connecting-2020-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/apo-connecting-2020-thumb.webp,images/gallery/apo-connecting-2020-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>APO Does Disco</label>
+          <img class="thumb" src="images/gallery/apo-does-disco-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/apo-does-disco-thumb.webp,images/gallery/apo-does-disco-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>With Bic Runga<br><small>(also Homepage testimonial)</small></label>
+          <img class="thumb" src="images/gallery/bic-runga-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/bic-runga-thumb.webp,images/gallery/bic-runga-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Big Play In</label>
+          <img class="thumb" src="images/gallery/big-play-in-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/big-play-in-thumb.webp,images/gallery/big-play-in-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Discovery 2024 (i)</label>
+          <img class="thumb" src="images/gallery/discovery-2024-a-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/discovery-2024-a-thumb.webp,images/gallery/discovery-2024-a-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Conducting (i)</label>
+          <img class="thumb" src="images/gallery/conducting-1-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/conducting-1-thumb.webp,images/gallery/conducting-1-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Discovery 2024 (ii)</label>
+          <img class="thumb" src="images/gallery/discovery-2024-b-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/discovery-2024-b-thumb.webp,images/gallery/discovery-2024-b-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Conducting (ii)</label>
+          <img class="thumb" src="images/gallery/conducting-2-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/conducting-2-thumb.webp,images/gallery/conducting-2-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Discovery 2025<br><small>(also Contact photo)</small></label>
+          <img class="thumb" src="images/gallery/discovery-2025-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/discovery-2025-thumb.webp,images/gallery/discovery-2025-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Winter Gala 2023</label>
+          <img class="thumb" src="images/gallery/winter-gala-2023-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/winter-gala-2023-thumb.webp,images/gallery/winter-gala-2023-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Portrait</label>
+          <img class="thumb" src="images/gallery/portrait-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/portrait-thumb.webp,images/gallery/portrait-full.webp">
+        </div>
+        <div class="photo-field">
+          <label>Headshot</label>
+          <img class="thumb" src="images/gallery/headshot-thumb.webp">
+          <input type="file" accept="image/*" data-paths="images/gallery/headshot-thumb.webp,images/gallery/headshot-full.webp">
         </div>
       </div>
     </div>
@@ -477,14 +548,14 @@ async function init() {
 // ---- Photo uploads ----
 const pendingPhotos = {}; // path -> { file, dataUrl }
 
-document.querySelectorAll('#photo-grid input[type=file]').forEach(input => {
+document.querySelectorAll('.photo-grid-inputs input[type=file]').forEach(input => {
   input.addEventListener('change', () => {
     const file = input.files[0];
     if (!file) return;
-    const path = input.dataset.path;
+    const paths = input.dataset.paths.split(',').map(p => p.trim());
     const reader = new FileReader();
     reader.onload = () => {
-      pendingPhotos[path] = { file, dataUrl: reader.result };
+      paths.forEach(path => { pendingPhotos[path] = { file, dataUrl: reader.result }; });
       const field = input.closest('.photo-field');
       field.querySelector('.thumb').src = reader.result;
       field.classList.add('changed');
