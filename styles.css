@@ -1,9 +1,9 @@
 :root {
-  --ink: #253551;
-  --ink-soft: #4A5062;
+  --ink: #000000;
+  --ink-soft: #4A4A4A;
   --cream: #F5F2EC;
-  --accent: #7A2E3D;
-  --line: rgba(37, 53, 81, 0.13);
+  --accent: #4A2545;
+  --line: rgba(0, 0, 0, 0.13);
   --line-on-ink: rgba(245, 242, 236, 0.2);
 
   --display: 'Playfair Display', Georgia, serif;
@@ -65,23 +65,26 @@ img { max-width: 100%; display: block; }
 .nav-links a:not(.btn)[aria-current="page"]::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: var(--accent);
 }
+/* Every button on the site is this same framed, uppercase mono label —
+   the header Contact link's treatment, applied everywhere a button
+   appears, not just in the nav. */
 .btn {
-  font-family: var(--body); font-weight: 600; font-size: 14px; text-decoration: none;
-  padding: 11px 26px; border-radius: 999px; border: 1px solid transparent;
-  display: inline-block; transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; text-decoration: none; background: transparent;
+  padding: 12px 24px; border-radius: 3px; border: 1px solid var(--ink); color: var(--ink);
+  display: inline-block; transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
-.btn-accent { background: var(--accent); color: var(--cream); }
-.btn-accent:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(122,46,61,0.35); }
+.btn-accent:hover, .btn-accent[aria-current="page"] {
+  background: var(--accent); border-color: var(--accent); color: var(--cream);
+}
 
-/* Header Contact link: a framed mono label rather than a generic filled pill,
-   matching the tagline/eyebrow treatment used elsewhere on the site. */
+/* Header Contact link: same framed label, adapted for the black nav
+   background — cream border/text instead of ink. */
 .nav-links .btn-accent {
-  background: transparent; border: 1px solid rgba(245,242,236,0.45); color: var(--cream);
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-  padding: 10px 22px; border-radius: 3px;
+  border-color: rgba(245,242,236,0.45); color: var(--cream);
 }
 .nav-links .btn-accent:hover, .nav-links .btn-accent[aria-current="page"] {
-  background: var(--accent); border-color: var(--accent); box-shadow: none;
+  background: var(--accent); border-color: var(--accent); color: var(--cream);
 }
 
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
@@ -264,14 +267,13 @@ section + section { border-top: 1px solid var(--line); }
   .rep-year .items { font-size: 0.85rem; line-height: 1.55; }
 }
 
-.btn-outline { background: transparent; border: 1px solid var(--ink); color: var(--ink); }
-.btn-outline:hover { background: var(--ink); color: var(--cream); }
+.btn-outline:hover, .btn-outline[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--cream); }
 
 /* Homepage: closing CTA pair, below the fold */
 .home-cta .wrap { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
 
 /* Contact */
-.btn-lg { padding: 15px 36px; font-size: 15px; margin-bottom: 8px; }
+.btn-lg { padding: 14px 30px; font-size: 12px; margin-bottom: 8px; }
 .detail-list { list-style: none; margin: 32px 0 0; padding: 0; }
 .detail-list li { display: flex; gap: 14px; padding: 16px 0; border-top: 1px solid var(--line); font-size: 1.02rem; }
 .detail-list li:last-child { border-bottom: 1px solid var(--line); }
