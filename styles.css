@@ -102,7 +102,7 @@ img { max-width: 100%; display: block; }
 /* Homepage header only: absolute-positioned, blends into the hero photo below */
 .site-header--home {
   position: absolute; top: 0; left: 0; right: 0; z-index: 10;
-  background: linear-gradient(180deg, rgba(37,53,81,0.95) 0%, rgba(37,53,81,0.75) 75%, rgba(37,53,81,0) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 75%, rgba(0,0,0,0) 100%);
   padding-bottom: 0;
 }
 .site-header--home .nav { padding-top: 28px; padding-bottom: 48px; }
@@ -119,7 +119,7 @@ img { max-width: 100%; display: block; }
 
 /* Hero: full-bleed photo, with a quote band across the bottom */
 .hero {
-  background-color: var(--ink); background-size: cover; background-position: 75% 18%; background-repeat: no-repeat;
+  background-color: #000; background-size: cover; background-position: 75% 18%; background-repeat: no-repeat;
   min-height: 96vh; position: relative;
 }
 @media (max-width: 780px) {
@@ -131,7 +131,7 @@ img { max-width: 100%; display: block; }
 }
 .hero-quote-band {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-  background: linear-gradient(0deg, rgba(37,53,81,0.92) 0%, rgba(37,53,81,0.65) 65%, rgba(37,53,81,0) 100%);
+  background: linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 65%, rgba(0,0,0,0) 100%);
   padding: 72px clamp(20px, 5vw, 56px) 32px; margin: 0; text-align: center;
 }
 @media (max-width: 780px) {
