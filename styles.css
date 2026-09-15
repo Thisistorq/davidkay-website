@@ -123,12 +123,19 @@ img { max-width: 100%; display: block; }
   min-height: 96vh; position: relative;
 }
 @media (max-width: 780px) {
-  .hero { min-height: 62vh; }
+  /* iOS Safari's `vh` is based on the toolbar-hidden viewport, which reads
+     taller than what's actually visible with the address bar showing —
+     `dvh` tracks the real visible height instead. Keep the vh line first
+     as a fallback for browsers that don't support dvh. */
+  .hero { min-height: 78vh; min-height: 78dvh; }
 }
 .hero-quote-band {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
   background: linear-gradient(0deg, rgba(37,53,81,0.92) 0%, rgba(37,53,81,0.65) 65%, rgba(37,53,81,0) 100%);
   padding: 72px clamp(20px, 5vw, 56px) 32px; margin: 0; text-align: center;
+}
+@media (max-width: 780px) {
+  .hero-quote-band { padding-top: 48px; }
 }
 .hero-quote-band {
   font-family: var(--display); font-weight: 600; color: var(--cream);
