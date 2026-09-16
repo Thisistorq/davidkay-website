@@ -10,15 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var copyrightYear = document.getElementById('copyright-year');
   if (copyrightYear) copyrightYear.textContent = new Date().getFullYear();
 
-  var stickyHeader = document.querySelector('.site-header:not(.site-header--home)');
-  if (stickyHeader) {
-    var setHeaderScrolled = function () {
-      stickyHeader.classList.toggle('is-scrolled', window.scrollY > 0);
-    };
-    setHeaderScrolled();
-    window.addEventListener('scroll', setHeaderScrolled, { passive: true });
-  }
-
   var toggle = document.querySelector('.nav-toggle');
   var links = document.querySelector('.nav-links');
   if (!toggle || !links) return;
