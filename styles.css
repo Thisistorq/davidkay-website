@@ -132,7 +132,7 @@ img { max-width: 100%; display: block; }
 @media (max-width: 780px) {
   /* Below the fold, the quote reads as its own block under the photo
      instead of overlaying it, so the image stays fully visible. */
-  .hero { min-height: 0; aspect-ratio: 4 / 5; display: flex; flex-direction: column; }
+  .hero { min-height: 0; height: 55vh; height: 55dvh; display: flex; flex-direction: column; }
 }
 .hero-quote-band {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
