@@ -138,7 +138,7 @@ img { max-width: 100%; display: block; }
   padding: 72px clamp(20px, 5vw, 56px) 32px; margin: 0; text-align: center;
 }
 @media (max-width: 780px) {
-  .hero-quote-band { padding-top: 48px; }
+  .hero-quote-band { padding-top: 16px; }
 }
 .hero-quote-band {
   font-family: var(--display); font-weight: 600; color: var(--cream);
