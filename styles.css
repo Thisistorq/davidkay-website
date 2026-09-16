@@ -39,9 +39,10 @@ img { max-width: 100%; display: block; }
 .site-header {
   position: sticky; top: 0; z-index: 20;
   background: linear-gradient(180deg,
-    rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.96) 25%, rgba(0,0,0,0.88) 42%,
-    rgba(0,0,0,0.72) 56%, rgba(0,0,0,0.5) 68%, rgba(0,0,0,0.28) 80%,
-    rgba(0,0,0,0.1) 91%, rgba(0,0,0,0) 100%);
+    rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.97) 20%, rgba(0,0,0,0.95) 35%,
+    rgba(0,0,0,0.92) 48%, rgba(0,0,0,0.85) 58%, rgba(0,0,0,0.72) 67%,
+    rgba(0,0,0,0.55) 75%, rgba(0,0,0,0.38) 82%, rgba(0,0,0,0.24) 88%,
+    rgba(0,0,0,0.13) 93%, rgba(0,0,0,0.05) 97%, rgba(0,0,0,0) 100%);
   padding-bottom: 40px;
 }
 .nav {
