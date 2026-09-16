@@ -130,11 +130,9 @@ img { max-width: 100%; display: block; }
   min-height: 96vh; position: relative;
 }
 @media (max-width: 780px) {
-  /* iOS Safari's `vh` is based on the toolbar-hidden viewport, which reads
-     taller than what's actually visible with the address bar showing —
-     `dvh` tracks the real visible height instead. Keep the vh line first
-     as a fallback for browsers that don't support dvh. */
-  .hero { min-height: 78vh; min-height: 78dvh; }
+  /* Below the fold, the quote reads as its own block under the photo
+     instead of overlaying it, so the image stays fully visible. */
+  .hero { min-height: 0; aspect-ratio: 4 / 5; display: flex; flex-direction: column; }
 }
 .hero-quote-band {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
@@ -142,7 +140,10 @@ img { max-width: 100%; display: block; }
   padding: 72px clamp(20px, 5vw, 56px) 32px; margin: 0; text-align: center;
 }
 @media (max-width: 780px) {
-  .hero-quote-band { padding-top: 16px; }
+  .hero-quote-band {
+    position: static; margin-top: auto; background: #000;
+    padding: 28px clamp(20px, 5vw, 56px) 36px;
+  }
 }
 .hero-quote-band {
   font-family: var(--display); font-weight: 600; color: var(--cream);
