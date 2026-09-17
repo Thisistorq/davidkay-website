@@ -131,7 +131,7 @@ img { max-width: 100%; display: block; }
 .hero-wrap { position: relative; }
 .hero {
   background-color: #000; background-size: cover; background-position: 75% 18%; background-repeat: no-repeat;
-  min-height: 96vh;
+  min-height: 100vh; min-height: 100dvh;
 }
 @media (max-width: 780px) {
   .hero { min-height: 0; height: 55vh; height: 55dvh; }
