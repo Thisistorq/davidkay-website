@@ -17,13 +17,16 @@
 //   GITHUB_REPO   — the repo name
 //   GITHUB_BRANCH — optional, defaults to "main"
 //
-// This function does NOT itself check who's calling it — admin.html's login
-// gate (Netlify Identity) is what restricts who can reach this far. Anyone
-// who can hit this endpoint directly could write to the repo, so it should
-// never be linked to or called from anywhere other than a logged-in-gated
-// admin panel.
+// Callers must send a valid Netlify Identity access token
+// (Authorization: Bearer ...), which admin.html does on every request.
+// Netlify verifies it and exposes the user as context.clientContext.user;
+// without that check anyone who found this URL could rewrite the site.
 
-exports.handler = async function (event) {
+exports.handler = async function (event, context) {
+  if (!context.clientContext || !context.clientContext.user) {
+    return { statusCode: 401, body: 'Not logged in' };
+  }
+
   const token = process.env.GITHUB_TOKEN;
   const owner = process.env.GITHUB_OWNER;
   const repo = process.env.GITHUB_REPO;

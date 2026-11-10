@@ -434,8 +434,18 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 // If already logged in from a previous visit, skip straight to the app
 if (getSession()) showApp();
 
+// Every call to the GitHub proxy carries the Identity access token — the
+// function rejects anything without a valid one, so the login is enforced
+// server-side, not just by hiding this page.
+async function apiFetch(path, opts = {}) {
+  const token = await ensureValidToken();
+  if (!token) { clearSession(); location.reload(); throw new Error("Session expired — please log in again"); }
+  const headers = Object.assign({}, opts.headers, { Authorization: "Bearer " + token });
+  return fetch(API_ROOT + path, Object.assign({}, opts, { headers }));
+}
+
 async function loadFile(name) {
-  const res = await fetch(API_ROOT + name);
+  const res = await apiFetch(name);
   if (!res.ok) throw new Error("Failed to load " + name + " (" + res.status + ")");
   const data = await res.json();
   // atob() alone treats each decoded byte as its own character, which mangles
@@ -582,7 +592,7 @@ function applyEdits() {
 }
 
 async function saveFile(name, content, sha) {
-  const res = await fetch(API_ROOT + name, {
+  const res = await apiFetch(name, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -654,11 +664,11 @@ document.querySelectorAll('.photo-grid-inputs input[type=file]').forEach(input =
 async function savePhoto(path, dataUrl) {
   const base64 = dataUrl.split(',')[1];
   // Need the current sha to update an existing file
-  const getRes = await fetch(API_ROOT + path);
+  const getRes = await apiFetch(path);
   const sha = getRes.ok ? (await getRes.json()).sha : undefined;
   const body = { message: "Update " + path + " via admin panel", content: base64 };
   if (sha) body.sha = sha;
-  const res = await fetch(API_ROOT + path, {
+  const res = await apiFetch(path, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
