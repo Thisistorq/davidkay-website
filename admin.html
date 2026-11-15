@@ -53,6 +53,10 @@
     <button type="submit" class="btn btn-primary">Log in</button>
     <div id="login-msg"></div>
   </form>
+  <p style="margin-top:18px; font-size:0.9rem;">
+    <a href="#" id="forgot-link" style="color:inherit; text-decoration:underline;">Forgot password?</a>
+  </p>
+  <div id="forgot-msg" style="font-size:13px; color:#5a606b;"></div>
 </div>
 
 <div id="invite-gate" class="hidden">
@@ -374,6 +378,25 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   }
 });
 
+// "Forgot password?" — asks Netlify Identity to email a recovery link. The
+// link lands on the site root with #recovery_token=, script.js forwards it
+// here, and the invite/recovery handler below lets the person set a new one.
+document.getElementById('forgot-link').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const out = document.getElementById('forgot-msg');
+  const email = document.getElementById('login-email').value.trim();
+  if (!email) { out.textContent = 'Type your email address above first, then click "Forgot password?" again.'; return; }
+  out.textContent = 'Sending…';
+  try {
+    await fetch('/.netlify/identity/recover', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+  } catch (err) { /* same message either way; don't reveal which emails exist */ }
+  out.textContent = 'If that email has an account, a reset link is on its way. Check your spam folder too.';
+});
+
 document.getElementById('logout-btn').addEventListener('click', () => {
   clearSession();
   location.reload();
@@ -420,12 +443,26 @@ document.getElementById('logout-btn').addEventListener('click', () => {
         throw new Error(err.error_description || err.msg || ('Failed (' + res.status + ')'));
       }
       const data = await res.json();
+      // GoTrue only applies `password` on /verify for invite (signup)
+      // confirmations. For a "forgot password" recovery token it just logs
+      // the user in and silently ignores the password, so the person gets in
+      // once and then can't log back in. Always set the password explicitly
+      // with the fresh access token so both flows really save it.
+      const setRes = await fetch('/.netlify/identity/user', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + data.access_token },
+        body: JSON.stringify({ password })
+      });
+      if (!setRes.ok) {
+        const err = await setRes.json().catch(() => ({}));
+        throw new Error(err.error_description || err.msg || ('Could not save password (' + setRes.status + ')'));
+      }
       saveTokenResponse(data);
       msg.textContent = '';
       document.getElementById('invite-gate').classList.add('hidden');
       showApp();
     } catch (err) {
-      msg.textContent = err.message + ' — if this keeps happening, ask Carl for a fresh invite link.';
+      msg.textContent = err.message + ' — if this keeps happening, use "Forgot password?" on the login page for a fresh link, or email hello@torqweb.nz.';
       msg.className = 'error';
     }
   });
